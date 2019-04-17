@@ -1,6 +1,5 @@
 # Sv1_GenomeAnnotation
 Sturnus vulgaris genome annotation
 
-Annotation Script - 2018.09.30
-
+AnnotationScript_Round1.bash
 Old annotation file
