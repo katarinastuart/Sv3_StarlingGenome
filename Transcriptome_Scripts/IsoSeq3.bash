@@ -46,6 +46,7 @@ ccs ${SMRTCELL2}/${SVHT}.subreads.bam ${OUT_DIR}/${SVHT}.ccs.bam --noPolish --mi
 
 
 
+
 ###Step 2 - Primer removal and demultiplexing
 #Removal of primers and identification of barcodes is performed using lima, which offers a specialized --isoseq mode. Even in the case that your sample is not barcoded, primer removal is performed by lima. If there are more than two sequences in your primer.fasta file or better said more than one pair of 5' and 3' primers, please use lima with --peek-guess to remove spurious false positive signal. More information about how to name input primer(+barcode) sequences in this FAQ.
 
@@ -75,10 +76,11 @@ cd /srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.1_StarlingIsoseq/analysis/st
 lima ${STEP1}/${SVB}.ccs.bam ${ANALYSIS}/primers.fasta ${SVB}.fl.bam  --isoseq --no-pbi
 lima ${STEP1}/${SVHT}.ccs.bam ${ANALYSIS}/primers.fasta ${SVHT}.fl.bam  --isoseq --no-pbi
 
+###For version Isoseq3.0
+lima ${SVB}.ccs.bam ../primers.fasta ${SVB}.bam --isoseq --no-pbi --dump-clips
+lima ${SVHT}.ccs.bam ../primers.fasta ${SVHT}.bam --isoseq --no-pbi --dump-clips
 
-
-
-###Step 3 - Refine
+###Step 3 - Refine (Not available in Isoseq3.0)
 #Your data now contains full-length reads, but still needs to be refined by:
 # - Trimming of poly(A) tails
 # - Rapid concatmer identification and removal
@@ -100,7 +102,7 @@ lima ${STEP1}/${SVHT}.ccs.bam ${ANALYSIS}/primers.fasta ${SVHT}.fl.bam  --isoseq
 #PBS -M katarina.stuart@student.unsw.edu.au
 #PBS -m ae
 
-#smrtlink isoseq3 step 3: Refine
+#smrtlink isoseq3 step 3: Refine 
 
 module add smrtlink
 
@@ -116,17 +118,18 @@ cd /srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.1_StarlingIsoseq/analysis/st
 isoseq3 refine ${STEP2}/${SVB}.fl.${PRIMERS}.bam ${ANALYSIS}/primers.fasta ${SVB}.flnc.bam --require-polya
 isoseq3 refine ${STEP2}/${SVHT}.fl.${PRIMERS}.bam ${ANALYSIS}/primers.fasta ${SVHT}.flnc.bam --require-polya
 
-
-
-isoseq3 refine movieX.NEB_5p--NEB_Clontech_3p.fl.bam primers.fasta movieX.flnc.bam
-
-
-
 #If your sample has poly(A) tails, use --require-polya. This filters for FL reads that have a poly(A) tail with at least 20 base pairs and removes identified tail:
-isoseq3 refine movieX.NEB_5p--NEB_Clontech_3p.fl.bam movieX.flnc.bam --require-polya
+#isoseq3 refine movieX.NEB_5p--NEB_Clontech_3p.fl.bam movieX.flnc.bam --require-polya
 
 ###Step 3b - Merge SMRT Cells
 #If you used more than one SMRT cells, use dataset for merging. Merge all of your <movie>.flnc.bam files:
+
+#SVB=m54261_190510_035631
+#SVHT=m54261_190511_001755
+#PRIMERS=F0_5p--R0_3p
+
+dataset create --type TranscriptSet merged.flnc.xml ${SVB}.fl.${PRIMERS}.bam ${SVHT}.fl.${PRIMERS}.bam
+
 dataset create --type TranscriptSet merged.flnc.xml movie1.flnc.bam movie2.flnc.bam movieN.flnc.bam
 
 #Similarly, merge all of your source <movie>.subreadset.xml files:
@@ -134,4 +137,31 @@ dataset create --type TranscriptSet merged.flnc.xml movie1.flnc.bam movie2.flnc.
  
  
  
- 
+###Step 4 - Cluster
+
+
+###For version Isoseq3.0
+SVB=m54261_190510_035631
+SVHT=m54261_190511_001755
+PRIMERS=F0_5p--R0_3p
+
+isoseq3 cluster ${SVB}.${PRIMERS}.bam ${SVB}.unpolished.bam --verbose
+isoseq3 cluster ${SVHT}.${PRIMERS}.bam ${SVHT}.unpolished.bam --verbose
+
+###Step 5 - Polish
+
+
+###For version Isoseq3.0
+SVB=m54261_190510_035631
+SVHT=m54261_190511_001755
+
+SMRTCELL1=${DATADIR}/1_A01
+SMRTCELL2=${DATADIR}/2_B01
+
+isoseq3 polish ${SVB}.unpolished.bam ${SMRTCELL1}/${SVB}.subreads.bam ${SVB}.polished.bam --verbose
+isoseq3 polish ${SVHT}.unpolished.bam ${SMRTCELL2}/${SVHT}.subreads.bam ${SVHT}.polished.bam --verbose
+
+
+
+
+
