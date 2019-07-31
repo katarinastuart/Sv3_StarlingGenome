@@ -80,6 +80,16 @@ lima ${STEP1}/${SVHT}.ccs.bam ${ANALYSIS}/primers.fasta ${SVHT}.fl.bam  --isoseq
 lima ${SVB}.ccs.bam ../primers.fasta ${SVB}.bam --isoseq --no-pbi --dump-clips
 lima ${SVHT}.ccs.bam ../primers.fasta ${SVHT}.bam --isoseq --no-pbi --dump-clips
 
+#ALTERNATIVE ROUTE FOR STEPS 3-5
+
+#https://github.com/PacificBiosciences/trim_isoseq_polyA
+#
+#https://github.com/GenomeRIK/tama
+#https://github.com/GenomeRIK/tama/wiki
+#https://github.com/GenomeRIK/tama/wiki/Tama-Collapse
+#https://github.com/GenomeRIK/tama/wiki/Tama-Merge
+
+
 ###Step 3 - Refine (Not available in Isoseq3.0)
 #Your data now contains full-length reads, but still needs to be refined by:
 # - Trimming of poly(A) tails
