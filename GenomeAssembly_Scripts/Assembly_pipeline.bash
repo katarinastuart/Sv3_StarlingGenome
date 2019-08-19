@@ -1,41 +1,20 @@
-Assembly-Pipeline--------------------------------------------------[2019.06.13]
+###Assembly-Pipeline--------------------------------------------------[2019.06.13]
 
+#https://support.10xgenomics.com/de-novo-assembly/software/overview/latest/performance
+#https://support.10xgenomics.com/de-novo-assembly/guidance/doc/achieving-success-with-de-novo-assembly
+#https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/using/running
 
+#Sturnus vulgaris = HN00105164
 
-https://support.10xgenomics.com/de-novo-assembly/software/overview/latest/performance
-https://support.10xgenomics.com/de-novo-assembly/guidance/doc/achieving-success-with-de-novo-assembly
-https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/using/running
+#This work has been run interactively on highmem node
 
-
-Initial species for sequencing: 
-
-Sturnus vulgaris = HN00105164:
-
-/srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.2_Starling10x/rawdata/HN00105164/HN00105164_10x_RawData_Outs/H2CYFCCX2/fastq_path/H2CYFCCX2/SV01/SV01_S1_L006_R1_001.fastq.gz
-/srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.2_Starling10x/rawdata/HN00105164/HN00105164_10x_RawData_Outs/H2CYFCCX2/fastq_path/H2CYFCCX2/SV01/SV01_S1_L006_R2_001.fastq.gz
+cd /srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.2_Starling10x/rawdata/HN00105164/HN00105164_10x_RawData_Outs/H2CYFCCX2/fastq_path/H2CYFCCX2/SV01
 
 gunzip -c SV01_S1_L006_R1_001.fastq.gz > /srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.2_Starling10x/data/fastq/SV01_S1_L006_R1_001.fastq
 gunzip -c SV01_S1_L006_R2_001.fastq.gz > /srv/scratch/z5188231/KStuart.Starling-Aug18/Sv3.2_Starling10x/data/fastq/SV01_S1_L006_R2_001.fastq
 
 
-
-#---
-#Ask gunzip to output to standard output and redirect to a file in that directory:
-#
-#gunzip -c file.gz > /THERE/file
-#zcat is a shortcut for gunzip -c.
-#
-#If you want to gunzip multiple files iterate over all files:
-#
-#for f in *.gz; do
-#  STEM=$(basename "${f}" .gz)
-#  gunzip -c "${f}" > /THERE/"${STEM}"
-#done
-#(here basename is used to get the part of the filename without the extension)
-#---
-
-
-Assembly-supernova--------------------------------------------------[2019.06.28]
+###Assembly-supernova--------------------------------------------------[2019.06.28]
 
 #I think the fastqs need to be unzipped and sitting in a directory somewhere called fastq, which is what you give to the --fastqs setting. Eg.
 #run on highmem node
@@ -140,25 +119,3 @@ python ~/SLiMSuite/tools/seqsuite.py summarise batchrun="*.fasta" basefile=svulg
 #SUM    00:36:29        Gap (N) length: 1,574,420 (0.58%)
 #SAVE   00:36:29        Table "summarise" saved to "svulgaris-10x-445M.summarise.tdt": 2 entries.
 #WARN   00:36:29        1 error messages! Check log for details.
-
-
-
-
-
-
-####SHARING DIRECTORIES TO STARLING GROUP
-chown -R :starling Sv1_StarlingGBS 
-chown -R :starling Sv0_GeneralPopgen
-chown -R :starling Sv2_StarlingLitReview
-chown -R :starling Sv3.2_Starling10x
-chown -R :starling Sv3.1_StarlingIsoseq
-chown -R :starling Sv3.3_GenomeAnnotation #taking a very long time
-
-
-chown -R :starling KStuart.Starling-Aug18
-ls KStuart.Starling-Aug18 -lrth
-
-chmod 770 KStuart.Starling-Aug18/
-
-ls -lrth | grep Starling
-
